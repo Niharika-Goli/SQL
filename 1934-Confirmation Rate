@@ -1,0 +1,10 @@
+SELECT s.user_id, ROUND(COALESCE(x.confirmation_rate,0),2) AS confirmation_rate
+FROM Signups s LEFT JOIN
+(SELECT user_id,
+SUM(CASE
+WHEN action='confirmed' THEN 1
+ELSE 0
+END)/COUNT(*) AS confirmation_rate
+FROM Confirmations
+GROUP BY user_id) AS x
+ON s.user_id = x.user_id
